@@ -230,6 +230,20 @@ impl Border {
             right_color: color
         }
     }
+
+    pub fn new_dual_color(thickness: u32, upper: Color, lower: Color) -> Border {
+        Border {
+            top_thickness: thickness,
+            bottom_thickness: thickness,
+            left_thickness: thickness,
+            right_thickness: thickness,
+
+            top_color: upper,
+            left_color: upper,
+            bottom_color: lower,
+            right_color: lower
+        }
+    }
 }
 
 pub struct Box {
@@ -239,11 +253,12 @@ pub struct Box {
 }
 
 impl Box {
-    pub fn new(manager: &mut WidgetManager, x: u32, y: u32, w: u32, h: u32) -> @mut Box {
+    pub fn new(manager: &mut WidgetManager, x: u32, y: u32, w: u32, h: u32,
+               border: Border, background: Color) -> @mut Box {
         let box = @mut Box {
             common: WidgetCommon::new(manager),
-            border: Border::new_all_same(1, Color::from_rgb(0xFFFFFF)),
-            background: Color::from_rgb(0x00FF00)
+            border: border,
+            background: background
         };
         box.common.x = x;
         box.common.y = y;
@@ -259,11 +274,33 @@ impl Widget for Box {
     }
 
     fn paint(&self, backend: &Backend, off_x: u32, off_y: u32) {
-        backend.fill_rect(self.common.x + off_x,
-                          self.common.y + off_y,
+        let top_left = (self.common.x + off_x,
+                        self.common.y + off_y);
+        backend.fill_rect(top_left.first(),
+                          top_left.second(),
                           self.common.w,
                           self.common.h,
                           self.background);
+        backend.fill_rect(top_left.first(),
+                          top_left.second(),
+                          self.common.w,
+                          self.border.top_thickness,
+                          self.border.top_color);
+        backend.fill_rect(top_left.first(),
+                          top_left.second(),
+                          self.border.left_thickness,
+                          self.common.h,
+                          self.border.left_color);
+        backend.fill_rect(top_left.first(),
+                          top_left.second() + self.common.h - self.border.bottom_thickness,
+                          self.common.w,
+                          self.border.bottom_thickness,
+                          self.border.bottom_color);
+        backend.fill_rect(top_left.first() + self.common.w - self.border.right_thickness,
+                          top_left.second(),
+                          self.border.right_thickness,
+                          self.common.h,
+                          self.border.right_color);
     }
 }
 

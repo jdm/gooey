@@ -60,7 +60,11 @@ pub fn main() {
     };
 
     let mut manager = gooey::WidgetManager::new();
-    let box = gooey::Box::new(&mut manager, 10, 20, 700, 500);
+    let border = gooey::Border::new_dual_color(10,
+                                               gooey::Color::from_rgb(0x99999900),
+                                               gooey::Color::from_rgb(0x77777700));
+    let background = gooey::Color::from_rgb(0x88888800);
+    let box = gooey::Box::new(&mut manager, 10, 20, 700, 500, border, background);
     manager.add(box);
 
     'main : loop {
