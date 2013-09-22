@@ -3,6 +3,10 @@ extern mod gooey;
 
 use std::libc;
 
+use gooey::animation::AnimationManager;
+use gooey::widget::WidgetManager;
+use gooey::box::{Border, Box};
+
 #[no_mangle]
 pub extern fn SDL_main(_argc: u32, _argv: **libc::c_char) {
     main();
@@ -59,18 +63,17 @@ pub fn main() {
         screen: screen
     };
 
-    let mut animations = gooey::AnimationManager::new();
+    let mut animations = AnimationManager::new();
 
-    let mut manager = gooey::WidgetManager::new();
-    let border = gooey::Border::new_dual_color(4,
+    let mut manager = WidgetManager::new();
+    let border = Border::new_dual_color(4,
                                                gooey::Color::from_rgb(0x99999900),
                                                gooey::Color::from_rgb(0x77777700));
     let background = gooey::Color::from_rgb(0x88888800);
     let eventual_y = 20;
     let eventual_h = 500;
-    let box = gooey::Box::new(&mut manager, 10, eventual_y + eventual_h / 2,
-                              700, 0,
-                              border, background);
+    let box = Box::new(&mut manager, 10, eventual_y + eventual_h / 2,
+                       700, 0, border, background);
     manager.add(box);
 
     animations.add(|| {
