@@ -17,32 +17,6 @@ pub struct SDLBackend<'self> {
 }
 
 impl<'self> gooey::Backend for SDLBackend<'self> {
-    fn draw_horiz_line(&self, x: u32, y: u32, w: u32, color: gooey::Color) {
-        do self.screen.with_lock |pixels| {
-            for i in range(x, x + w) {
-                unsafe {
-                    let idx = (*self.screen.raw).pitch as u32 * y + i * 4; //XXXjdm hardcoded bpp
-                    pixels[idx] = color.r;
-                    pixels[idx + 1] = color.g;
-                    pixels[idx + 2] = color.b;
-                }
-            }
-        }
-    }
-
-    fn draw_vert_line(&self, x: u32, y: u32, h: u32, color: gooey::Color) {
-        do self.screen.with_lock |pixels| {
-            for i in range(0, h) {
-                unsafe {
-                let idx = (*self.screen.raw).pitch as u32 * (y + i)  + x * 4; //XXXjdm hardcode bpp
-                    pixels[idx] = color.r;
-                    pixels[idx + 1] = color.g;
-                    pixels[idx + 2] = color.b;
-                }
-            }
-        }
-    }
-
     fn fill_rect(&self, x: u32, y: u32, w: u32, h: u32, color: gooey::Color) {
         self.screen.fill_rect(Some(sdl::Rect(x as i16, y as i16, w as u16, h as u16)),
                               sdl::video::RGB(color.r, color.g, color.b));

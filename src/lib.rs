@@ -26,8 +26,6 @@ pub enum MouseEvent {
 }
 
 pub trait Backend {
-    fn draw_horiz_line(&self, x: u32, y: u32, w: u32, color: Color);
-    fn draw_vert_line(&self, x: u32, y: u32, h: u32, color: Color);
     fn fill_rect(&self, x: u32, y: u32, w: u32, h: u32, color: Color);
 }
 
