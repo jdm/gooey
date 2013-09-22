@@ -59,15 +59,35 @@ pub fn main() {
         screen: screen
     };
 
+    let mut animations = gooey::AnimationManager::new();
+
     let mut manager = gooey::WidgetManager::new();
-    let border = gooey::Border::new_dual_color(10,
+    let border = gooey::Border::new_dual_color(4,
                                                gooey::Color::from_rgb(0x99999900),
                                                gooey::Color::from_rgb(0x77777700));
     let background = gooey::Color::from_rgb(0x88888800);
-    let box = gooey::Box::new(&mut manager, 10, 20, 700, 500, border, background);
+    let eventual_y = 20;
+    let eventual_h = 500;
+    let box = gooey::Box::new(&mut manager, 10, eventual_y + eventual_h / 2,
+                              700, 0,
+                              border, background);
     manager.add(box);
 
+    animations.add(|| {
+        let increment = 25;
+        box.common.h += increment;
+        box.common.y -= increment / 2;
+        if box.common.h < eventual_h {
+            Some(10)
+        } else {
+            None
+        }
+    }, 10);
+
     'main : loop {
+        animations.run();
+
+        screen.fill(sdl::video::RGB(0, 0, 0));
         manager.paint(&backend);
         screen.flip();
 
